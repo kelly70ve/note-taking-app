@@ -14,7 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Need static so browser knows where html files are 
-// Was getting a MINE type
+// Was getting a MINE type error
 app.use(express.static(path.join(__dirname,"public")));
 
 // ROUTES
