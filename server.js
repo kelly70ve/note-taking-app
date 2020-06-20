@@ -48,15 +48,7 @@ app.post("/api/notes", function (req, res) {
   // req.body hosts is equal to the JSON post sent from the user
   // This works because of our body parsing middleware
 
-  // var newNote = req.body; 
-
-  // var id = newNote.title.toLowerCase().replace(/\s+/g, "");
-
-  // var newNoteID = {...newNote, id: id}
-
   var newNote = {...req.body, id: req.body.title.toLowerCase().replace(/\s+/g, "")};
-
-  console.log("After adding id", newNote);
 
   fs.readFile("db/db.json", (err, data) => {
     if (err) throw err;
@@ -65,11 +57,9 @@ app.post("/api/notes", function (req, res) {
 
     var addedNote = [...notes, newNote];
 
-    console.log("After read", addedNote)
-
     fs.writeFile("db/db.json", JSON.stringify(addedNote), (err, data) => {
       if (err) {console.log(err)};
-      console.log("A note has been written");
+      console.log("A new note has been written");
     })
   });
 
@@ -83,9 +73,28 @@ app.post("/api/notes", function (req, res) {
 
 app.delete("/api/notes/:id", function (req, res) {
 
+  var deleteNote = req.params.id
 
+  fs.readFile("db/db.json", (err, data) => {
+    if (err) throw err;
 
+    var notes = JSON.parse(data);
+
+    var deletedNote = notes.filter( note => {
+      if (note.id !== deleteNote) {
+        return note
+      }
+    })
+
+    fs.writeFile("db/db.json", JSON.stringify(deletedNote), (err, data) => {
+      if (err) {console.log(err)};
+      console.log("A note has been deleted");
+    })
+  });
+  
+  res.json(deleteNote)
 }); 
+
 
 // Starts the server to begin listening
 // =============================================================
